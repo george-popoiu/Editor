@@ -40,7 +40,7 @@ public class Editor extends JFrame implements ActionListener, DocumentListener {
 	private boolean changed = false;
 	private File file;
 	private ArrayList<String> textStates = new ArrayList<String>();
-	private int currentState = -1;
+	private int currentState = -1;	
 	
 	public Editor() {
 		super("Editor");
@@ -82,6 +82,7 @@ public class Editor extends JFrame implements ActionListener, DocumentListener {
 		save.addActionListener(this);
 		save.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK));
 		JMenuItem saveas = new JMenuItem("Save as...");
+		saveas.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_MASK | InputEvent.SHIFT_MASK));
 		file.add(saveas);
 		saveas.addActionListener(this);		
 		JMenuItem quit = new JMenuItem("Quit");
