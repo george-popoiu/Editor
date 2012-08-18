@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.URL;
+import java.util.ArrayList;
 
 import javax.imageio.stream.FileImageInputStream;
 import javax.swing.JEditorPane;
@@ -38,6 +39,8 @@ public class Editor extends JFrame implements ActionListener, DocumentListener {
 	private JMenuItem copy, paste, cut;
 	private boolean changed = false;
 	private File file;
+	private ArrayList<String> textStates = new ArrayList<String>();
+	private int currentState = -1;
 	
 	public Editor() {
 		super("Editor");
@@ -78,6 +81,9 @@ public class Editor extends JFrame implements ActionListener, DocumentListener {
 		save.setMnemonic('S');
 		save.addActionListener(this);
 		save.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK));
+		JMenuItem saveas = new JMenuItem("Save as...");
+		file.add(saveas);
+		saveas.addActionListener(this);		
 		JMenuItem quit = new JMenuItem("Quit");
 		file.add(quit);
 		quit.addActionListener(this);
@@ -86,6 +92,39 @@ public class Editor extends JFrame implements ActionListener, DocumentListener {
 	}
 	
 	private void buildEditMenu() {		
+		JMenu edit = new JMenu("Edit");
+		menu.add(edit);
+		edit.setMnemonic('E');
+		//cut
+		JMenuItem cut = new JMenuItem("Cut");
+		cut.addActionListener(this);
+		cut.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, InputEvent.CTRL_DOWN_MASK));
+		cut.setMnemonic('T');
+		edit.add(cut);
+		//copy
+		JMenuItem copy = new JMenuItem("Copy");
+		copy.addActionListener(this);
+		copy.setMnemonic('C');
+		copy.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.CTRL_DOWN_MASK));
+		edit.add(copy);
+		//paste
+		JMenuItem paste = new JMenuItem("Paste");
+		paste.setMnemonic('P');
+		paste.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, InputEvent.CTRL_DOWN_MASK));
+		edit.add(paste);
+		paste.addActionListener(this);		
+		//find
+		JMenuItem find = new JMenuItem("Find");
+		find.setMnemonic('F');
+		find.addActionListener(this);
+		edit.add(find);
+		find.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, InputEvent.CTRL_DOWN_MASK));
+		//select all
+		JMenuItem sall = new JMenuItem("Select All");
+		sall.setMnemonic('A');
+		sall.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, InputEvent.CTRL_DOWN_MASK));
+		sall.addActionListener(this);
+		edit.add(sall);
 	}
 
 	@Override
@@ -103,6 +142,12 @@ public class Editor extends JFrame implements ActionListener, DocumentListener {
 		else if(action.equals("New")) {
 			newFile();
 		}
+		else if(action.equals("Save as...")) {
+			saveAs("Save as...");
+		}
+		else if(action.equals("Select All")) {
+			textPane.selectAll();			
+		}		
 	}
 	
 	private void newFile() {
@@ -110,6 +155,13 @@ public class Editor extends JFrame implements ActionListener, DocumentListener {
 		file = null;
 		textPane.setText("");
 		changed = false;
+		setTitle("Editor");
+		resetState();
+	}
+	
+	private void resetState() {
+		textStates.clear();
+		currentState = -1;
 	}
 	
 	private void loadFile() {
@@ -120,9 +172,11 @@ public class Editor extends JFrame implements ActionListener, DocumentListener {
 			if( result==JFileChooser.CANCEL_OPTION ) return;
 			if( result==JFileChooser.APPROVE_OPTION ) {
 				if(changed) saveFile();
+				resetState();
 				file = dialog.getSelectedFile();				
 				textPane.setText(readFile(file));
 				changed = false;
+				setTitle("Editor - " + file.getName());
 			}
 		}
 		catch(Exception e) {
@@ -157,7 +211,7 @@ public class Editor extends JFrame implements ActionListener, DocumentListener {
 			if(ans==JOptionPane.NO_OPTION ) return;
 		}
 		if( file==null ) {
-			saveAs();
+			saveAs("Save");
 			return;
 		}
 		String text = textPane.getText();
@@ -174,8 +228,9 @@ public class Editor extends JFrame implements ActionListener, DocumentListener {
 		}
 	}
 	
-	private void saveAs() {
+	private void saveAs(String dialogTitle) {
 		JFileChooser dialog = new JFileChooser(System.getProperty("user.home"));
+		dialog.setDialogTitle(dialogTitle);
 		int result = dialog.showSaveDialog(this);
 		if( result != JFileChooser.APPROVE_OPTION ) return;
 		file = dialog.getSelectedFile();
@@ -184,6 +239,7 @@ public class Editor extends JFrame implements ActionListener, DocumentListener {
 			writer.write(textPane.getText());
 			writer.close();
 			changed = false;
+			setTitle("Editor - " + file.getName());
 		} 
 		catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -193,16 +249,22 @@ public class Editor extends JFrame implements ActionListener, DocumentListener {
 	@Override
 	public void insertUpdate(DocumentEvent e) {
 		changed = true;
+		textStates.add(textPane.getText());
+		currentState++;
 	}
 
 	@Override
 	public void removeUpdate(DocumentEvent e) {
 		changed = true;
+		textStates.add(textPane.getText());
+		currentState++;
 	}
 
 	@Override
 	public void changedUpdate(DocumentEvent e) {
 		changed = true;
+		textStates.add(textPane.getText());
+		currentState++;
 	}
 
 }
