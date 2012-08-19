@@ -34,13 +34,11 @@ public class Editor extends JFrame implements ActionListener, DocumentListener {
 		new Editor();
 	}
 	
-	private JEditorPane textPane;
+	public JEditorPane textPane;
 	private JMenuBar menu;
 	private JMenuItem copy, paste, cut;
-	private boolean changed = false;
-	private File file;
-	private ArrayList<String> textStates = new ArrayList<String>();
-	private int currentState = -1;	
+	public boolean changed = false;
+	private File file;	
 	
 	public Editor() {
 		super("Editor");
@@ -95,21 +93,21 @@ public class Editor extends JFrame implements ActionListener, DocumentListener {
 	private void buildEditMenu() {		
 		JMenu edit = new JMenu("Edit");
 		menu.add(edit);
-		edit.setMnemonic('E');
+		edit.setMnemonic('E');		
 		//cut
-		JMenuItem cut = new JMenuItem("Cut");
+		cut = new JMenuItem("Cut");
 		cut.addActionListener(this);
 		cut.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, InputEvent.CTRL_DOWN_MASK));
 		cut.setMnemonic('T');
 		edit.add(cut);
 		//copy
-		JMenuItem copy = new JMenuItem("Copy");
+		copy = new JMenuItem("Copy");
 		copy.addActionListener(this);
 		copy.setMnemonic('C');
 		copy.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.CTRL_DOWN_MASK));
 		edit.add(copy);
 		//paste
-		JMenuItem paste = new JMenuItem("Paste");
+		paste = new JMenuItem("Paste");
 		paste.setMnemonic('P');
 		paste.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, InputEvent.CTRL_DOWN_MASK));
 		edit.add(paste);
@@ -148,6 +146,19 @@ public class Editor extends JFrame implements ActionListener, DocumentListener {
 		}
 		else if(action.equals("Select All")) {
 			textPane.selectAll();			
+		}	
+		else if(action.equals("Copy")) {
+			textPane.copy();
+		}
+		else if(action.equals("Cut")) {
+			textPane.cut();
+		}
+		else if( action.equals("Paste") ) {
+			textPane.paste();			
+		}
+		else if(action.equals("Find")) {
+			FindDialog find = new FindDialog(this, true);
+			find.showDialog();
 		}		
 	}
 	
@@ -157,12 +168,6 @@ public class Editor extends JFrame implements ActionListener, DocumentListener {
 		textPane.setText("");
 		changed = false;
 		setTitle("Editor");
-		resetState();
-	}
-	
-	private void resetState() {
-		textStates.clear();
-		currentState = -1;
 	}
 	
 	private void loadFile() {
@@ -173,7 +178,6 @@ public class Editor extends JFrame implements ActionListener, DocumentListener {
 			if( result==JFileChooser.CANCEL_OPTION ) return;
 			if( result==JFileChooser.APPROVE_OPTION ) {
 				if(changed) saveFile();
-				resetState();
 				file = dialog.getSelectedFile();				
 				textPane.setText(readFile(file));
 				changed = false;
@@ -250,22 +254,16 @@ public class Editor extends JFrame implements ActionListener, DocumentListener {
 	@Override
 	public void insertUpdate(DocumentEvent e) {
 		changed = true;
-		textStates.add(textPane.getText());
-		currentState++;
 	}
 
 	@Override
 	public void removeUpdate(DocumentEvent e) {
 		changed = true;
-		textStates.add(textPane.getText());
-		currentState++;
 	}
 
 	@Override
 	public void changedUpdate(DocumentEvent e) {
 		changed = true;
-		textStates.add(textPane.getText());
-		currentState++;
 	}
 
 }
