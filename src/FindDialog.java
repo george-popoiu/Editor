@@ -1,10 +1,8 @@
 import java.awt.GridLayout;
-import java.awt.TextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.math.MathContext;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -16,9 +14,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+@SuppressWarnings("serial")
+public class FindDialog extends JDialog implements ActionListener, KeyListener {
 
-public class FindDialog extends JDialog implements ActionListener, KeyListener{	
-	
 	Editor parent;
 	JLabel label;
 	JTextField textField;
@@ -26,7 +24,7 @@ public class FindDialog extends JDialog implements ActionListener, KeyListener{
 	JButton find, close;
 	boolean finishedFinding = true;
 	Matcher matcher;
-	
+
 	public FindDialog(Editor parent, boolean modal) {
 		super(parent, modal);
 		this.parent = parent;
@@ -35,13 +33,13 @@ public class FindDialog extends JDialog implements ActionListener, KeyListener{
 		initComponents();
 		setTitle("Find");
 		setLocationRelativeTo(parent);
-		pack();		
+		pack();
 	}
-	
+
 	public void showDialog() {
 		setVisible(true);
 	}
-	
+
 	private void initComponents() {
 		setLayout(new GridLayout(3, 1));
 		JPanel panel1 = new JPanel();
@@ -69,23 +67,21 @@ public class FindDialog extends JDialog implements ActionListener, KeyListener{
 		close.addKeyListener(this);
 		caseSensitive.addKeyListener(this);
 	}
-	
+
 	private void find(String pattern) {
-		if(!finishedFinding) {
-			if(matcher.find()) {
+		if (!finishedFinding) {
+			if (matcher.find()) {
 				int selectionStart = matcher.start();
 				int selectionEnd = matcher.end();
 				parent.textPane.moveCaretPosition(matcher.start());
-				parent.textPane.select(selectionStart, selectionEnd);							
-			}
-			else {
+				parent.textPane.select(selectionStart, selectionEnd);
+			} else {
 				finishedFinding = true;
-				JOptionPane.showMessageDialog(this, "You have reached the end of the file", 
-						"End of file", JOptionPane.INFORMATION_MESSAGE);
-				//closeDialog();
+				JOptionPane.showMessageDialog(this, "You have reached the end of the file", "End of file",
+						JOptionPane.INFORMATION_MESSAGE);
+				// closeDialog();
 			}
-		}
-		else {
+		} else {
 			matcher = Pattern.compile(pattern).matcher(parent.textPane.getText());
 			finishedFinding = false;
 			find(pattern);
@@ -95,33 +91,32 @@ public class FindDialog extends JDialog implements ActionListener, KeyListener{
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		String cmd = e.getActionCommand();
-		if(cmd.equals("Find")) {
+		if (cmd.equals("Find")) {
 			String input = textField.getText();
 			StringBuilder pattern = new StringBuilder();
-			if( !caseSensitive.isSelected() ) {
+			if (!caseSensitive.isSelected()) {
 				pattern.append("(?i)");
 			}
 			pattern.append(input);
 			find(pattern.toString());
-		}
-		else if(cmd.equals("Close")) {
+		} else if (cmd.equals("Close")) {
 			closeDialog();
 		}
 	}
-	
+
 	private void closeDialog() {
 		setVisible(false);
 		dispose();
 	}
 
 	@Override
-	public void keyTyped(KeyEvent e) {		
+	public void keyTyped(KeyEvent e) {
 	}
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		//System.out.println(e.getKeyCode());
-		if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+		// System.out.println(e.getKeyCode());
+		if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 			closeDialog();
 		}
 	}
@@ -129,5 +124,5 @@ public class FindDialog extends JDialog implements ActionListener, KeyListener{
 	@Override
 	public void keyReleased(KeyEvent e) {
 	}
-	
+
 }
