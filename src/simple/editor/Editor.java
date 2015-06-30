@@ -1,3 +1,4 @@
+package simple.editor;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -25,7 +26,7 @@ import javax.swing.event.DocumentListener;
 @SuppressWarnings("serial")
 public class Editor extends JFrame implements ActionListener, DocumentListener {
 
-	public static void main(String[] args) {
+	public static  void main(String[] args) {
 		new Editor();
 	}
 
