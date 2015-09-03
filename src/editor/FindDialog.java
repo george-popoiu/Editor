@@ -1,3 +1,5 @@
+package editor;
+
 import java.awt.GridLayout;
 import java.awt.TextField;
 import java.awt.event.ActionEvent;
