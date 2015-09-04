@@ -1,12 +1,10 @@
 package editor;
 
 import java.awt.GridLayout;
-import java.awt.TextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.math.MathContext;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

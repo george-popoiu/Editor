@@ -7,16 +7,11 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.net.URL;
-import java.util.ArrayList;
-
-import javax.imageio.stream.FileImageInputStream;
+import javax.swing.ImageIcon;
 import javax.swing.JEditorPane;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -63,65 +58,81 @@ public class Editor extends JFrame implements ActionListener, DocumentListener {
 	}
 	
 	private void buildFileMenu() {
+            
+                //create icons
+                ImageIcon newIcon = new ImageIcon("icons/new.png");
+                ImageIcon openIcon = new ImageIcon("icons/open.png");
+                ImageIcon saveIcon = new ImageIcon("icons/save.png");
+                ImageIcon saveAsIcon = new ImageIcon("icons/save_as.png");
+                ImageIcon exitIcon = new ImageIcon("icons/exit.png");
+                
 		JMenu file = new JMenu("File");
 		file.setMnemonic('F');
 		menu.add(file);
-		JMenuItem n = new JMenuItem("New");
+		JMenuItem n = new JMenuItem("New", newIcon);
 		n.setMnemonic('N');
 		n.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_DOWN_MASK));
 		n.addActionListener(this);
 		file.add(n);
-		JMenuItem open = new JMenuItem("Open");
+		JMenuItem open = new JMenuItem("Open", openIcon);
 		file.add(open);
 		open.addActionListener(this);
 		open.setMnemonic('O');
 		open.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK));
-		JMenuItem save = new JMenuItem("Save");
+		JMenuItem save = new JMenuItem("Save", saveIcon);
 		file.add(save);
 		save.setMnemonic('S');
 		save.addActionListener(this);
 		save.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK));
-		JMenuItem saveas = new JMenuItem("Save as...");
+		JMenuItem saveas = new JMenuItem("Save as...", saveAsIcon);
 		saveas.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_MASK | InputEvent.SHIFT_MASK));
 		file.add(saveas);
 		saveas.addActionListener(this);		
-		JMenuItem quit = new JMenuItem("Quit");
+		JMenuItem quit = new JMenuItem("Quit", exitIcon);
 		file.add(quit);
 		quit.addActionListener(this);
 		quit.setMnemonic('Q');
 		quit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, InputEvent.CTRL_DOWN_MASK));
 	}
 	
-	private void buildEditMenu() {		
+	private void buildEditMenu() {
+            
+                //create icons
+                ImageIcon cutIcon = new ImageIcon("icons/cut.png");
+                ImageIcon copyIcon = new ImageIcon("icons/copy.png");
+                ImageIcon pasteIcon = new ImageIcon("icons/paste.png");
+                ImageIcon findIcon = new ImageIcon("icons/find.png");
+                ImageIcon selectAllIcon = new ImageIcon("icons/select_all.png");
+
 		JMenu edit = new JMenu("Edit");
 		menu.add(edit);
 		edit.setMnemonic('E');		
 		//cut
-		cut = new JMenuItem("Cut");
+		cut = new JMenuItem("Cut", cutIcon);
 		cut.addActionListener(this);
 		cut.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, InputEvent.CTRL_DOWN_MASK));
 		cut.setMnemonic('T');
 		edit.add(cut);
 		//copy
-		copy = new JMenuItem("Copy");
+		copy = new JMenuItem("Copy", copyIcon);
 		copy.addActionListener(this);
 		copy.setMnemonic('C');
 		copy.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.CTRL_DOWN_MASK));
 		edit.add(copy);
 		//paste
-		paste = new JMenuItem("Paste");
+		paste = new JMenuItem("Paste", pasteIcon);
 		paste.setMnemonic('P');
 		paste.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, InputEvent.CTRL_DOWN_MASK));
 		edit.add(paste);
 		paste.addActionListener(this);		
 		//find
-		JMenuItem find = new JMenuItem("Find");
+		JMenuItem find = new JMenuItem("Find", findIcon);
 		find.setMnemonic('F');
 		find.addActionListener(this);
 		edit.add(find);
 		find.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, InputEvent.CTRL_DOWN_MASK));
 		//select all
-		JMenuItem sall = new JMenuItem("Select All");
+		JMenuItem sall = new JMenuItem("Select All", selectAllIcon);
 		sall.setMnemonic('A');
 		sall.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, InputEvent.CTRL_DOWN_MASK));
 		sall.addActionListener(this);
